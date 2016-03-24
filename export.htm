@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+		<link href="style/main.css" type="text/css" rel="stylesheet"/>
+		<style>
+			#txtOutput {
+				width: 500px;
+				height: 600px;
+			}
+		</style>
+	</head>
+	<body>
+		<textarea id="txtOutput"></textarea>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
+		<script src="script/user.js" type="text/javascript"></script>
+		<script src="script/emote.js" type="text/javascript"></script>
+		<script src="script/XMLWriter.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				exportEmote();
+			});
+			
+			function exportEmote() {
+				var key = new Array();
+				for (var record in emote)
+				{
+					key.push(record+"");
+				}
+				key = key.sort();
+				
+				var XML = new XMLWriter();
+				XML.BeginNode("emotes");
+				for (var i = 0; i < key.length; i++) {
+					var emoteObj = getEmote(key[i]);
+					XML.BeginNode("emote");
+					XML.Node("name", key[i]);
+					XML.Node("MYSELF", emoteObj.MSG_MYSELF);
+					XML.Node("OTHERS", emoteObj.MSG_OTHERS);
+					XML.Node("SELF_MYSELF", emoteObj.MSG_SELF_MYSELF);
+					XML.Node("SELF_OTHERS", emoteObj.MSG_SELF_OTHERS);
+					XML.Node("TARGET_MYSELF", emoteObj.MSG_TARGET_MYSELF);
+					XML.Node("TARGET", emoteObj.MSG_TARGET);
+					XML.Node("TARGET_OTHERS", emoteObj.MSG_TARGET_OTHERS);
+					XML.EndNode();
+				}
+        XML.EndNode();
+        XML.Close();
+        $("#txtOutput").val(XML.ToString());
+			}
+		</script>
+	</body>
+</html>
